@@ -11,7 +11,7 @@ const getRandomInt = (min, max) => Math.floor(crypto.randomInt(min, max + 1));
 
 // Kiểm tra ngày hợp lệ ( yy/mm/dd/ 2019-now 1-12 1-31 )
 const isValidDate = (date) => {
-    const startDate = moment("2019-01-01");
+    const startDate = moment("2020-01-01");
     const endDate = moment();
     return date.isBetween(startDate, endDate, null, "[]");
 };
@@ -31,7 +31,7 @@ const makeCommits = async (n) => {
         const randomWeeks = getRandomInt(0, 58);
         const randomDays = getRandomInt(0, 6);
 
-        const randomDate = moment("2019-01-01")
+        const randomDate = moment("2020-01-01")
             .add(randomWeeks, "weeks")
             .add(randomDays, "days");
 
