@@ -56,7 +56,7 @@ const makeCommits = async (n) => {
         if (isValidDate(randomDate)) {
             try {
                 await markCommit(randomDate);
-                if ((i + 1) % 100 === 0) {
+                if ((i + 1) % 10 === 0) {
                     console.log(`✅ Đã tạo ${i + 1} commit`);
                 }
             } catch (err) {
