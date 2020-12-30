@@ -57,7 +57,7 @@ const makeCommits = async (n) => {
             try {
                 await markCommit(randomDate);
                 if ((i + 1) % 10 === 0) {
-                    console.log(`✅ Đã tạo ${i + 1}000 commit`);
+                    console.log(`✅ Đã tạo ${i + 1} commit`);
                 }
             } catch (err) {
                 console.error(`❌ Lỗi khi commit ${randomDate.toISOString()}:`, err.message);
