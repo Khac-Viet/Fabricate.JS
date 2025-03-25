@@ -47,5 +47,5 @@ const makeCommits = async (n) => {
     await git.push();
 };
 
-// Gọi hàm để tạo 500000 commit
-makeCommits(500000);
+// Gọi hàm để tạo 50000 commit
+makeCommits(50000);
