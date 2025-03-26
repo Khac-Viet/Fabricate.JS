@@ -36,7 +36,6 @@ const makeCommits = async (n) => {
             .add(randomDays, "days");
 
         if (isValidDate(randomDate)) {
-            console.log(`Creating commit: ${randomDate.toISOString()}`);
             await markCommit(randomDate);
         } else {
             console.log(`Invalid date: ${randomDate.toISOString()}, skipping...`);
