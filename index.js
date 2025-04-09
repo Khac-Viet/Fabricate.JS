@@ -1,50 +1,50 @@
-import jsonfile from "jsonfile";
-import moment from "moment";
-import simpleGit from "simple-git";
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 import crypto from "crypto";
 
-const path = "./data.json";
-const git = simpleGit();
+const dataPath = "./data.json";
 
-// Hàm tạo số ngẫu nhiên an toàn bằng crypto layer 1 mạng BTC
 const getRandomInt = (min, max) => Math.floor(crypto.randomInt(min, max + 1));
 
-// Kiểm tra ngày hợp lệ ( yy/mm/dd/ 2019-now 1-12 1-31 )
-const isValidDate = (date) => {
-    const startDate = moment("2020-01-01");
-    const endDate = moment();
-    return date.isBetween(startDate, endDate, null, "[]");
+// Trả về ngày ngẫu nhiên trong khoảng từ 2020-01-01 đến hiện tại
+const getRandomDate = () => {
+    const start = new Date("2020-01-01").getTime();
+    const end = new Date().getTime();
+    const randomTime = getRandomInt(start, end);
+    return new Date(randomTime);
 };
 
-// Ghi file JSON và tạo commit
-const markCommit = async (date) => {
-    const data = { date: date.toISOString() };
-    await jsonfile.writeFile(path, data);
+// Ghi file và tạo commit với ngày cụ thể
+const markCommit = (date) => {
+    const isoDate = date.toISOString();
 
-    await git.add([path]);
-    await git.commit(date.toISOString(), { "--date": date.toISOString() });
+    // Ghi file JSON
+    fs.writeFileSync(dataPath, JSON.stringify({ date: isoDate }));
+
+    // Thêm và commit bằng git CLI
+    execSync(`git add ${dataPath}`);
+    execSync(`git commit -m "${isoDate}" --date="${isoDate}" --quiet`);
 };
 
-// Tạo commit giả lập nếu không bị block -> check ngày xong check khối
-const makeCommits = async (n) => {
+// Chạy quá trình tạo commit
+const makeCommits = (n) => {
+    console.log(`🛠️  Bắt đầu tạo ${n} commit...`);
+
     for (let i = 0; i < n; i++) {
-        const randomWeeks = getRandomInt(0, 58);
-        const randomDays = getRandomInt(0, 6);
+        const date = getRandomDate();
+        markCommit(date);
 
-        const randomDate = moment("2020-01-01")
-            .add(randomWeeks, "weeks")
-            .add(randomDays, "days");
-
-        if (isValidDate(randomDate)) {
-            await markCommit(randomDate);
-        } else {
-            console.log(`Invalid date: ${randomDate.toISOString()}, skipping...`);
+        if ((i + 1) % 1000 === 0) {
+            console.log(`✅ Đã tạo ${i + 1} commit...`);
         }
     }
 
-    console.log("Pushing all commits...");
-    await git.push();
+    console.log("🚀 Push toàn bộ commit lên remote...");
+    execSync("git push", { stdio: "inherit" });
+
+    console.log("🎉 Hoàn tất!");
 };
 
-// Gọi hàm để tạo 50000 commit
+// Gọi hàm tạo 50,000 commit
 makeCommits(50000);
